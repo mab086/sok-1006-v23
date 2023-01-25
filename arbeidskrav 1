@@ -1,0 +1,107 @@
+import sympy as sp
+import numpy as np
+from matplotlib import pyplot as plt
+import pandas as pd
+import sympy.solvers as solve
+import math
+
+df=pd.read_csv("https://uit-sok-1006-v23.github.io/data/suits_watermelons.csv",delimiter=";")
+
+df
+
+#oppgave 1a
+df_1 = df
+df_1["Q"]=df_1["log q"]
+df_1["Q"]=np.exp(df_1["Q"])
+df_1["P"]=df_1["log p"]
+df_1["P"]=np.exp(df_1["P"])
+df_1
+
+#oppgave 1b 
+
+plt.style.use("dark_background")
+fig, (ax1,ax2) = plt.subplots(1,2, figsize=(15,5))
+ax1.plot(df_1["Year"],df_1["Q"], color="green",label='Quantity')
+ax2.plot(df_1["Year"],df_1["P"], color="red",label='Price')
+ax1.set_title('Quantity of watermelons')
+ax2.set_title('Price of watermelons')
+ax1.set_ylabel('Quantity')
+ax2.set_ylabel('Price')
+ax1.set_xlabel('Year')
+ax2.set_xlabel('Year')
+ax1.legend()
+ax2.legend()
+
+
+#Oppgave 2 a, b, c
+x1=np.arange(20,105,5)
+x2=np.log(x1)
+data= {"Q (i millioner)":x1,"log Q": x2}
+df_2=pd.DataFrame(data)
+
+x3=-2 +1.7*(df_2["log Q"])
+x4=8.5-0.82*(df_2["log Q"])
+df_2["supply log P"]=x3
+df_2["demand log P"]=x4
+df_2["supply P"]=np.exp(x3)
+df_2["demand P"]=np.exp(x4)
+df_2
+
+
+#oppgave 2 d
+plt.style.use("dark_background")
+fig, ax = plt.subplots()
+ax.plot(df_2["Q (i millioner)"],df_2["supply P"], color="red",label='Supply')
+ax.set_xlabel("Quantity (i millioner)")
+ax.set_ylabel("Price (i dollar)")
+ax.plot(df_2["Q (i millioner)"],df_2["demand P"], color="green",label='Demand')
+ax.legend()
+plt.show()
+
+#oppgave 3 a 
+
+x5=-2.0+1.7*df_2["log Q"]+0.4
+df_2["New supply log P"]=x5
+df_2["New supply P"]=np.exp(x5)
+df_2
+
+#oppgave 3 b
+plt.style.use("dark_background")
+fig, ax = plt.subplots()
+ax.plot(df_2["Q (i millioner)"],df_2["supply P"], color="green",label='tilbud')
+ax.set_xlabel("Quantity (i millioner)")
+ax.set_ylabel("Price (i dollar)")
+ax.plot(df_2["Q (i millioner)"],df_2["demand P"], color="red",label='etterspørsel')
+ax.plot(df_2["Q (i millioner)"],df_2["New supply P"], color="yellow", label="Ny tilbud")
+ax.legend()
+plt.show()
+
+#Oppgave 1 a
+logp, logq=sp.symbols("logp logq")
+eq=sp.Eq(-2.0+1.7*logq, logp)
+sp.solve(eq, logq)
+
+print(-(0.588235294117647/1))
+print(np.exp(-0.588235294117647)) 
+
+##priselastisiteten er på omntrent 0.56
+
+
+#Oppgave 1 b
+eq1=sp.Eq(8.5+0.82*logq, logp)
+sp.solve(eq1, logq)
+
+
+print(-(1.21951219512195)/1)
+print(np.exp(-1.21951219512195))
+
+##priselastisiteten er på omntrent 0.56
+
+
+Oppgave 2
+
+tilbudslikningen viser at hvis prisen øker med 1%, faller kvantum solgt med 0.59%
+
+Oppgave 3
+
+etterspørselslikningenviser  at hvis prisen øker med 1%, faller etterspørselen med 1.22%
